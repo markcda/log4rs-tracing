@@ -6,8 +6,17 @@ pub use crate::append::rolling_file::{
   RollingFileAppender,
   policy::compound::CompoundPolicy,
   policy::compound::{
-    trigger::{Trigger, onstartup::OnStartUpTrigger, size::SizeTrigger, time::TimeTrigger},
-    roll::{Roll, delete::DeleteRoller, fixed_window::FixedWindowRoller},
+    trigger::{
+      Trigger,
+      onstartup::{OnStartUpTrigger, OnStartUpTriggerConfig},
+      size::{SizeTrigger, SizeTriggerConfig},
+      time::{TimeTrigger, TimeTriggerConfig},
+    },
+    roll::{
+      Roll,
+      delete::{DeleteRoller, DeleteRollerConfig},
+      fixed_window::{FixedWindowRoller, FixedWindowRollerConfig},
+    },
   }
 };
 pub use crate::encode::pattern::PatternEncoder;
