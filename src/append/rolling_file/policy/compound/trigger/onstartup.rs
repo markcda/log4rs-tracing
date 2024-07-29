@@ -14,8 +14,9 @@ use crate::config::{Deserialize, Deserializers};
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, Default, serde::Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct OnStartUpTriggerConfig {
+    /// On startup minimal size for triggering
     #[serde(default = "default_min_size")]
-    min_size: u64,
+    pub min_size: u64,
 }
 
 #[cfg(feature = "config_parsing")]

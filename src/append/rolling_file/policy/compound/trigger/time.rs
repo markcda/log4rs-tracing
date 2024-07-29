@@ -23,20 +23,23 @@ use crate::config::{Deserialize, Deserializers};
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, Default, serde::Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct TimeTriggerConfig {
-    interval: TimeTriggerInterval,
+    /// Interval of file rolling
+    pub interval: TimeTriggerInterval,
+    /// Modulating
     #[serde(default)]
-    modulate: bool,
+    pub modulate: bool,
+    /// Max random delay
     #[serde(default)]
-    max_random_delay: u64,
+    pub max_random_delay: u64,
 }
 
 #[cfg(not(feature = "config_parsing"))]
 /// Configuration for the time trigger.
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, Default)]
 pub struct TimeTriggerConfig {
-    interval: TimeTriggerInterval,
-    modulate: bool,
-    max_random_delay: u64,
+    pub interval: TimeTriggerInterval,
+    pub modulate: bool,
+    pub max_random_delay: u64,
 }
 
 /// A trigger which rolls the log once it has passed a certain time.
@@ -65,6 +68,61 @@ pub enum TimeTriggerInterval {
     Month(i64),
     /// TimeTriger in year(s).
     Year(i64),
+}
+
+impl TimeTriggerInterval {
+    /// Time deserializer
+    pub fn from_str(v: &str) -> Result<Self, &'static str> {
+        let (number, unit) = match v.find(|c: char| !c.is_ascii_digit()) {
+            Some(n) => (v[..n].trim(), Some(v[n..].trim())),
+            None => (v.trim(), None),
+        };
+
+        let number = match number.parse::<i64>() {
+            Ok(n) => {
+                if n < 0 {
+                    return Err("expected a non-negative number!")
+                }
+                n
+            }
+            Err(_) => {
+                return Err("expected a number!")
+            }
+        };
+
+        let unit = match unit {
+            Some(u) => u,
+            None => return Ok(TimeTriggerInterval::Second(number)),
+        };
+
+        let result = if unit.eq_ignore_ascii_case("second")
+            || unit.eq_ignore_ascii_case("seconds")
+        {
+            Some(TimeTriggerInterval::Second(number))
+        } else if unit.eq_ignore_ascii_case("minute")
+            || unit.eq_ignore_ascii_case("minutes")
+        {
+            Some(TimeTriggerInterval::Minute(number))
+        } else if unit.eq_ignore_ascii_case("hour") || unit.eq_ignore_ascii_case("hours") {
+            Some(TimeTriggerInterval::Hour(number))
+        } else if unit.eq_ignore_ascii_case("day") || unit.eq_ignore_ascii_case("days") {
+            Some(TimeTriggerInterval::Day(number))
+        } else if unit.eq_ignore_ascii_case("week") || unit.eq_ignore_ascii_case("weeks") {
+            Some(TimeTriggerInterval::Week(number))
+        } else if unit.eq_ignore_ascii_case("month") || unit.eq_ignore_ascii_case("months")
+        {
+            Some(TimeTriggerInterval::Month(number))
+        } else if unit.eq_ignore_ascii_case("year") || unit.eq_ignore_ascii_case("years") {
+            Some(TimeTriggerInterval::Year(number))
+        } else {
+            return Err("expected a valid unit!")
+        };
+
+        match result {
+            Some(n) => Ok(n),
+            None => Err("expected a time!"),
+        }
+    }
 }
 
 impl Default for TimeTriggerInterval {

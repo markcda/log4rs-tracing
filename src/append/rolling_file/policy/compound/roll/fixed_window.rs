@@ -21,9 +21,12 @@ use crate::config::{Deserialize, Deserializers};
 #[derive(Clone, Eq, PartialEq, Hash, Debug, Default, serde::Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct FixedWindowRollerConfig {
-    pattern: String,
-    base: Option<u32>,
-    count: u32,
+    /// Pattern of fixed window roller
+    pub pattern: String,
+    /// Main index
+    pub base: Option<u32>,
+    /// Max file count
+    pub count: u32,
 }
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]

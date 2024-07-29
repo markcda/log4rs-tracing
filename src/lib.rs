@@ -195,6 +195,9 @@ pub mod filter;
 #[cfg(feature = "console_writer")]
 mod priv_io;
 
+#[cfg(feature = "all_components")]
+pub mod prelude;
+
 pub use config::{init_config, Config};
 
 #[cfg(feature = "config_parsing")]
