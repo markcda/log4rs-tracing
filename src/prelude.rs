@@ -1,6 +1,7 @@
 //! Utils for fast imports.
 
 pub use crate::append::console::ConsoleAppender;
+pub use crate::append::tracing::TracingAppender;
 pub use crate::append::file::FileAppender;
 pub use crate::append::rolling_file::{
   RollingFileAppender,
