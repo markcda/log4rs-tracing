@@ -10,7 +10,7 @@ pub use crate::append::rolling_file::{
       Trigger,
       onstartup::{OnStartUpTrigger, OnStartUpTriggerConfig},
       size::{SizeTrigger, SizeTriggerConfig},
-      time::{TimeTrigger, TimeTriggerConfig},
+      time::{TimeTrigger, TimeTriggerConfig, TimeTriggerInterval},
     },
     roll::{
       Roll,
